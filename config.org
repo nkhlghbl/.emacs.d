@@ -1,32 +1,33 @@
+
 #+TITLE: Emacs Configuration
-#+AUTHOR: Your Name Here
+#+AUTHOR: Nikhil Ghobale
 
-Boilerplate for a ~/.emacs.d/config.org emacs configuration using
-"Sane Defaults".
+I've been using Emacs form Aug of 2016. I am pretty new to this editor.
+I am learning my way into this editor.
 
-Steps to making this file yours:
+This configuration uses the [[https://github.com/jwiegley/use-package][use-package]] package from John Wiegley, which is
+a fantastic way to manage package configurations.
 
-1) Change all instances of "Your Name Here" to your name.
-2) Change all instances of "your@email.here" to your email address.
-3) Create ~/.emacs.d/custom.el even if it's empty.
-   Emacs will now write your (interactive) customizations to that
-   file. 
-4) Change the Sane Defaults if you need to. 
-   For example if you read and write Chinese and so prefer to default
-   to utf-16.
-5) Teach yourself what goes into your backup directories
-   ~/.emacs.d/backups
-   ~/.emacs.d/auto-save-list
-   So you'll know where to look for older versions of files that
-   you've edited. 
-6) Delete these instructions and replace them with a personalized
-   introduction. 
+* Installing Emacs
+
+
+
+On Ubuntu,[[http://manpages.ubuntu.com/manpages/xenial/en/man8/apt.8.html][apt package manger]] is an easy way to install emacs.
+
+Here's what the parameter means.
+- ~emacs24~ :: installs stable branch of emacs
+- ~emacs~ :: installs devlopment branch of emacs
+- ~emacs24-nox~ :: installs emacs without x windows support
+ 
+#+begin_src sh
+sudo apt install emacs24
+#+end_src
 
 * Personal Information
 
 #+begin_src emacs-lisp
-(setq user-full-name "Your Name Here"
-      user-mail-address "your@email.here")
+(setq user-full-name "Nikhil Ghobale"
+      user-mail-address "nkhlghbl@gmail.com")
 #+end_src
 
 * Customize settings
@@ -38,6 +39,92 @@ customize settings in [[file:init.el][init.el]].
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 #+end_src
+
+* Theme
+
+
+** Cyberpunk theme
+
+The [[https://github.com/n3mo/cyberpunk-theme.el][cyberpunk theme]] is dark and colorful. However, I don't like the
+boxes around the mode line.
+
+#+begin_src emacs-lisp
+
+(use-package cyberpunk-theme
+  :if (window-system)
+  :ensure t
+  :init
+  (progn
+    (load-theme 'cyberpunk t)
+    (set-face-attribute `mode-line nil
+                        :box nil)
+    (set-face-attribute `mode-line-inactive nil
+                        :box nil)))
+#+end_src
+
+I tend to switch themes more often than normal. For example, switching
+to a lighter theme (such as the default) or to a different theme
+depending on the time of day or my mood. Normally, switching themes is
+a multi-step process with ~disable-theme~ and ~load-theme~. The
+~switch-theme~ function will do that in one swoop. I just choose which
+theme I want to go to.
+
+** Solarized theme
+
+Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bbatsov's solarized themes]].
+
+#+begin_src emacs-lisp
+(use-package solarized-theme
+  :defer 10
+  :init
+  (setq solarized-use-variable-pitch nil)
+  :ensure t)
+#+end_src
+
+** Monokai theme
+
+#+begin_src emacs-lisp :tangle no
+(use-package monokai-theme
+  :if (window-system)
+  :ensure t
+  :init
+  (setq monokai-use-variable-pitch nil))
+#+end_src
+
+** Waher theme
+
+#+begin_src emacs-lisp :tangle no
+(use-package waher-theme
+  if (window-system)
+  :ensure t
+  :init
+  (load-theme 'waher))
+#+end_src
+
+** Convenient theme functions
+
+#+begin_src emacs-lisp
+(defun switch-theme (theme)
+  "Disables any currently active themes and loads THEME."
+  ;; This interactive call is taken from `load-theme'
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapc 'symbol-name
+                                   (custom-available-themes))))))
+  (let ((enabled-themes custom-enabled-themes))
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme t)))
+
+(defun disable-active-themes ()
+  "Disables any currently active themes listed in `custom-enabled-themes'."
+  (interactive)
+  (mapc #'disable-theme custom-enabled-themes))
+
+(bind-key "s-<f12>" 'switch-theme)
+(bind-key "s-<f11>" 'disable-active-themes)
+#+end_src
+
 
 * Sane defaults
 
@@ -114,3 +201,24 @@ at point as the default value for occur.
 
 (bind-key "M-s o" 'occur-dwim)
 #+end_src
+* List buffers
+
+ibuffer is the improved version of list-buffers.
+
+#+begin_src emacs-lisp
+;; make ibuffer the default buffer lister.
+(defalias 'list-buffers 'ibuffer)
+#+end_src
+
+
+source: http://ergoemacs.org/emacs/emacs_buffer_management.html
+
+#+begin_src emacs-lisp
+(add-hook 'dired-mode-hook 'auto-revert-mode)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+#+end_src
+
+source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
