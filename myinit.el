@@ -105,10 +105,107 @@
 (bind-key "M-s o" 'occur-dwim)
 
 ;; make ibuffer the default buffer lister.
-(defalias 'list-buffers 'ibuffer)
+(defalias 'list-buffers 'ibuffer-other-window)
 
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;; Also auto refresh dired, but be quiet about it
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
+
+(use-package which-key
+        :ensure t 
+        :config
+        (which-key-mode))
+
+(use-package try
+  :ensure t)
+
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; it looks like counsel is a requirement for swiper
+(use-package counsel
+  :ensure t
+  )
+
+(use-package ivy
+  :ensure t
+  :diminish (ivy-mode)
+  :bind (("C-x b" . ivy-switch-buffer))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+(setq ivy-display-style 'fancy))
+
+(use-package swiper
+  :ensure try
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (global-set-key "\C-s" 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    ;(global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    ;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    ;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    ;(global-set-key (kbd "<f1> l") 'counsel-load-library)
+    ;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    ;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    ;(global-set-key (kbd "C-c g") 'counsel-git)
+    ;(global-set-key (kbd "C-c j") 'counsel-git-grep)
+    ;(global-set-key (kbd "C-c k") 'counsel-ag)
+    ;(global-set-key (kbd "C-x l") 'counsel-locate)
+    ;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    ;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+
+ (use-package avy
+   :ensure t
+   :bind ("M-s" . avy-goto-char))
+
+(bind-key "s-C-<left>"  'shrink-window-horizontally)
+(bind-key "s-C-<right>" 'enlarge-window-horizontally)
+(bind-key "s-C-<down>"  'shrink-window)
+(bind-key "s-C-<up>"    'enlarge-window)
+
+(defun vsplit-other-window ()
+  "Splits the window vertically and switches to that window."
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil))
+(defun hsplit-other-window ()
+  "Splits the window horizontally and switches to that window."
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1 nil))
+
+(bind-key "C-x 2" 'vsplit-other-window)
+(bind-key "C-x 3" 'hsplit-other-window)
+
+(use-package ace-window
+  :ensure t
+  :init
+  (progn
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))) 
+    ))
+
+(windmove-default-keybindings)
+(winner-mode 1)
+
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
