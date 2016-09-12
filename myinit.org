@@ -126,7 +126,6 @@ Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bba
 (bind-key "s-<f11>" 'disable-active-themes)
 #+end_src
 
-
 * Sane defaults
 
 Let's start with some sane defaults, shall we?

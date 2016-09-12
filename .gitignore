@@ -1,11 +1,8 @@
-/config.el
+/myinit.el
 /elpa/
 /auto-save-list/
-/.#config.org
 /backups/
-/.custom.el.swp
 /ac-comphist.dat
-/custom.el.save
 /ido.last
 /recentf
 
