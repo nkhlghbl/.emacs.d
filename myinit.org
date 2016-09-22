@@ -1,4 +1,3 @@
-
 #+TITLE: Emacs Configuration
 #+AUTHOR: Nikhil Ghobale
 
@@ -42,8 +41,10 @@ customize settings in [[file:init.el][init.el]].
 #+end_src
 
 * Theme
-
-
+** Wombat theme
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'wombat t)
+#+END_SRC
 ** Cyberpunk theme
 
 The [[https://github.com/n3mo/cyberpunk-theme.el][cyberpunk theme]] is dark and colorful. However, I don't like the
@@ -51,16 +52,17 @@ boxes around the mode line.
 
 #+begin_src emacs-lisp
 
-(use-package cyberpunk-theme
-  :if (window-system)
-  :ensure t
-  :init
-  (progn
-    (load-theme 'cyberpunk t)
-    (set-face-attribute `mode-line nil
-                        :box nil)
-    (set-face-attribute `mode-line-inactive nil
-                        :box nil)))
+  (use-package cyberpunk-theme
+    :if (window-system)
+    :ensure t
+    ;;:init
+    ;;(progn
+      ;;(load-theme 'cyberpunk-theme t)
+      ;;(set-face-attribute `mode-line nil
+      ;;                    :box nil)
+      ;;(set-face-attribute `mode-line-inactive nil
+    ;;:box nil)
+    )
 #+end_src
 
 I tend to switch themes more often than normal. For example, switching
@@ -133,54 +135,54 @@ Let's start with some sane defaults, shall we?
 Sources for this section include [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnars Sveen]] and [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]].
 
 #+begin_src emacs-lisp
-;; These functions are useful. Activate them.
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
+  ;; These functions are useful. Activate them.
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+  (put 'narrow-to-region 'disabled nil)
+  (put 'dired-find-alternate-file 'disabled nil)
 
-;; Answering just 'y' or 'n' will do
-(defalias 'yes-or-no-p 'y-or-n-p)
+  ;; Answering just 'y' or 'n' will do
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; Keep all backup and auto-save files in one directory
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+  ;; Keep all backup and auto-save files in one directory
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
 
-;; UTF-8 please
-(setq locale-coding-system 'utf-8) ; pretty
-(set-terminal-coding-system 'utf-8) ; pretty
-(set-keyboard-coding-system 'utf-8) ; pretty
-(set-selection-coding-system 'utf-8) ; please
-(prefer-coding-system 'utf-8) ; with sugar on top
-(setq-default indent-tabs-mode nil)
+  ;; UTF-8 please
+  (setq locale-coding-system 'utf-8) ; pretty
+  (set-terminal-coding-system 'utf-8) ; pretty
+  (set-keyboard-coding-system 'utf-8) ; pretty
+  (set-selection-coding-system 'utf-8) ; please
+  (prefer-coding-system 'utf-8) ; with sugar on top
+  (setq-default indent-tabs-mode nil)
 
-;; Turn off the blinking cursor
-(blink-cursor-mode -1)
+  ;; Turn off the blinking cursor
+  (blink-cursor-mode -1)
 
-(setq-default indent-tabs-mode nil)
-(setq-default indicate-empty-lines t)
+  (setq-default indent-tabs-mode nil)
+  (setq-default indicate-empty-lines t)
 
-;; Don't count two spaces after a period as the end of a sentence.
-;; Just one space is needed.
-(setq sentence-end-double-space nil)
+  ;; Don't count two spaces after a period as the end of a sentence.
+  ;; Just one space is needed.
+  (setq sentence-end-double-space nil)
 
-;; delete the region when typing, just like as we expect nowadays.
-(delete-selection-mode t)
+  ;; delete the region when typing, just like as we expect nowadays.
+  (delete-selection-mode t)
 
-(show-paren-mode t)
+  (show-paren-mode t)
 
-(column-number-mode t)
+  (column-number-mode t)
 
-(global-visual-line-mode)
-(diminish 'visual-line-mode)
+  (global-visual-line-mode)
+  (diminish 'visual-line-mode)
 
-(setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-buffer-name-style 'forward)
 
-;; -i gets alias definitions from .bash_profile
-(setq shell-command-switch "-ic")
+  ;; -i gets alias definitions from .bash_profile
+  (setq shell-command-switch "-ic")
 
-;; Don't beep at me
-(setq visible-bell t)
+  ;; Don't beep at me
+  (setq visible-bell t)
 #+end_src
 
 The following function for ~occur-dwim~ is taken from [[https://github.com/abo-abo][Oleh Krehel]] from
@@ -247,49 +249,10 @@ source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; it looks like counsel is a requirement for swiper
-  (use-package counsel
-    :ensure t
-    )
-
-  (use-package ivy
-    :ensure t
-    :diminish (ivy-mode)
-    :bind (("C-x b" . ivy-switch-buffer))
-    :config
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-  (setq ivy-display-style 'fancy))
-
-  (use-package swiper
-    :ensure try
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (global-set-key "\C-s" 'swiper)
-      (global-set-key (kbd "C-c C-r") 'ivy-resume)
-      ;(global-set-key (kbd "<f6>") 'ivy-resume)
-      (global-set-key (kbd "M-x") 'counsel-M-x)
-      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-      ;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-      ;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-      ;(global-set-key (kbd "<f1> l") 'counsel-load-library)
-      ;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-      ;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      ;(global-set-key (kbd "C-c g") 'counsel-git)
-      ;(global-set-key (kbd "C-c j") 'counsel-git-grep)
-      ;(global-set-key (kbd "C-c k") 'counsel-ag)
-      ;(global-set-key (kbd "C-x l") 'counsel-locate)
-      ;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-      ;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      (setq ivy-display-style 'fancy)
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
-
-   (use-package avy
-     :ensure t
-     :bind ("M-s" . avy-goto-char))
+  (global-set-key "\C-cl" 'org-store-link)
+       (global-set-key "\C-cc" 'org-capture)
+       (global-set-key "\C-ca" 'org-agenda)
+       (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
 * Window Management
 
@@ -350,4 +313,106 @@ do just that to reduce the repetition.
       (ac-config-default)
       (global-auto-complete-mode t)
       ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; it looks like counsel is a requirement for swiper
+  (use-package counsel
+    :ensure t
+    )
+
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy))
+
+  (use-package swiper
+    :ensure try
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (global-set-key "\C-s" 'swiper)
+      (global-set-key (kbd "C-c C-r") 'ivy-resume)
+      ;(global-set-key (kbd "<f6>") 'ivy-resume)
+      (global-set-key (kbd "M-x") 'counsel-M-x)
+      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+      ;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+      ;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+      ;(global-set-key (kbd "<f1> l") 'counsel-load-library)
+      ;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+      ;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+      ;(global-set-key (kbd "C-c g") 'counsel-git)
+      ;(global-set-key (kbd "C-c j") 'counsel-git-grep)
+      ;(global-set-key (kbd "C-c k") 'counsel-ag)
+      ;(global-set-key (kbd "C-x l") 'counsel-locate)
+      ;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      ;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      (setq ivy-display-style 'fancy)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+   (use-package avy
+     :ensure t
+     :bind ("M-s" . avy-goto-char))
+#+END_SRC
+
+* Yassnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init
+      (yas-global-mode 1))
+#+END_SRC
+* Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode t))
+#+END_SRC
+
+* Powerline
+
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :ensure t
+    :init
+    (powerline-default-theme))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package micgoline
+    :ensure t
+    :init
+    (setq powerline-default-separator 'roundstub))
+#+END_SRC
+* Web Devlopment
+** Web-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+  :ensure t)
+#+END_SRC
+
+** Emmet
+
+According to [[http://emmet.io/][their website]] , “Emmet — the essential toolkit for web-developers.”
+
+#+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :commands emmet-mode
+    :config
+    (add-hook 'html-mode-hook 'emmet-mode)
+    (add-hook 'css-mode-hook 'emmet-mode))
+#+END_SRC
+* Scratch
+#+BEGIN_SRC emacs-lisp
+  (use-package scratch
+    :ensure t
+    :commands scratch)
 #+END_SRC
