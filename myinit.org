@@ -418,8 +418,8 @@ do just that to reduce the repetition.
   (use-package powerline
     :ensure t
     :init
-    ;(powerline-center-theme)
-    ;(setq powerline-default-separator 'wave)
+    (powerline-center-theme)
+    (setq powerline-default-separator 'wave)
 )
 #+END_SRC
 
@@ -427,15 +427,8 @@ do just that to reduce the repetition.
   (use-package micgoline
     :ensure t
     :init
-  ; (setq powerline-default-separator 'roundstub)
+    (setq powerline-default-separator 'roundstub)
 )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (sml/setup)
-  (setq sml/theme 'dark)
-  (setq sml/theme 'light)
-  (setq sml/theme 'respectful)
 #+END_SRC
 * Web Devlopment
 ** Web-mode
