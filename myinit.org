@@ -23,6 +23,10 @@ sudo apt build-dep emacs
 sudo apt install emacs
 #+end_src
 
+* libraries
+#+BEGIN_SRC emacs-lisp
+  (use-package dash)
+#+END_SRC
 * Personal Information
 
 #+begin_src emacs-lisp
@@ -107,27 +111,48 @@ Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bba
 ** Convenient theme functions
 
 #+begin_src emacs-lisp
-(defun switch-theme (theme)
-  "Disables any currently active themes and loads THEME."
-  ;; This interactive call is taken from `load-theme'
-  (interactive
-   (list
-    (intern (completing-read "Load custom theme: "
-                             (mapc 'symbol-name
-                                   (custom-available-themes))))))
-  (let ((enabled-themes custom-enabled-themes))
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme theme t)))
+  (defun switch-theme (theme)
+    "Disables any currently active themes and loads THEME."
+    ;; This interactive call is taken from `load-theme'
+    (interactive
+     (list
+      (intern (completing-read "Load custom theme: "
+                               (mapc 'symbol-name
+                                     (custom-available-themes))))))
+    (let ((enabled-themes custom-enabled-themes))
+      (mapc #'disable-theme custom-enabled-themes)
+      (load-theme theme t)))
 
-(defun disable-active-themes ()
-  "Disables any currently active themes listed in `custom-enabled-themes'."
-  (interactive)
-  (mapc #'disable-theme custom-enabled-themes))
+  (defun disable-active-themes ()
+    "Disables any currently active themes listed in `custom-enabled-themes'."
+    (interactive)
+    (mapc #'disable-theme custom-enabled-themes))
 
-(bind-key "s-<f12>" 'switch-theme)
-(bind-key "s-<f11>" 'disable-active-themes)
+  (bind-key "s-<f12>" 'switch-theme)
+  (bind-key "s-<f11>" 'disable-active-themes)
 #+end_src
 
+** nlinum-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package nlinum
+    :ensure t
+    :config
+    (nlinum-mode))
+#+END_SRC
+** nlinum-relative
+#+BEGIN_SRC emacs-lisp
+  (use-package nlinum-relative
+      :ensure t
+      :config
+      ;; something else you want
+      ;;(nlinum-relative-setup-evil)
+      (add-hook 'prog-mode-hook 'nlinum-relative-mode)
+      :init
+      (setq nlinum-relative-redisplay-delay 0)      ;; delay
+      (setq nlinum-relative-current-symbol "->")      ;; or "" for display current line number
+      (setq nlinum-relative-offset 0)                 ;; 1 if you want 0, 2, 3...
+      )
+#+END_SRC
 * Sane defaults
 
 Let's start with some sane defaults, shall we?
@@ -158,6 +183,8 @@ Sources for this section include [[https://github.com/magnars/.emacs.d/blob/mast
 
   ;; Turn off the blinking cursor
   (blink-cursor-mode -1)
+  (set-default 'cursor-type 'hbar)
+  (set-face-attribute 'mode-line nil :box nil)
 
   (setq-default indent-tabs-mode nil)
   (setq-default indicate-empty-lines t)
@@ -169,13 +196,13 @@ Sources for this section include [[https://github.com/magnars/.emacs.d/blob/mast
   ;; delete the region when typing, just like as we expect nowadays.
   (delete-selection-mode t)
 
-  (show-paren-mode t)
+  (show-paren-mode)
 
-  (column-number-mode t)
+  (column-number-mode)
 
   (global-visual-line-mode)
   (diminish 'visual-line-mode)
-
+  (global-hl-line-mode -1)
   (setq uniquify-buffer-name-style 'forward)
 
   ;; -i gets alias definitions from .bash_profile
@@ -254,6 +281,15 @@ source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
        (global-set-key "\C-ca" 'org-agenda)
        (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
+
+org-reveal
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal
+    :ensure t
+    :config
+    (setq org-reveal-root "file:////home/nkhl/Dropbox/gitpackages/reveal.js/"))
+#+END_SRC
 * Window Management
 
 #+begin_src emacs-lisp
@@ -299,10 +335,10 @@ do just that to reduce the repetition.
 #+END_SRC
 
 *** windmove on/off
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
    (windmove-default-keybindings)
-   (winner-mode 1)
-    #+END_SRC
+   (winner-mode t)
+#+END_SRC
   
 * Auto Complete
 #+BEGIN_SRC emacs-lisp
@@ -382,14 +418,24 @@ do just that to reduce the repetition.
   (use-package powerline
     :ensure t
     :init
-    (powerline-default-theme))
+    ;(powerline-center-theme)
+    ;(setq powerline-default-separator 'wave)
+)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (use-package micgoline
     :ensure t
     :init
-    (setq powerline-default-separator 'roundstub))
+  ; (setq powerline-default-separator 'roundstub)
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (sml/setup)
+  (setq sml/theme 'dark)
+  (setq sml/theme 'light)
+  (setq sml/theme 'respectful)
 #+END_SRC
 * Web Devlopment
 ** Web-mode
@@ -415,4 +461,11 @@ According to [[http://emmet.io/][their website]] , “Emmet — the essential to
   (use-package scratch
     :ensure t
     :commands scratch)
+#+END_SRC
+* Mini-Buffer Editing 
+Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it, especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
+#+BEGIN_SRC emacs-lisp
+  (use-package miniedit
+    :commands minibuffer-edit
+    :init (miniedit-install))
 #+END_SRC
