@@ -9,8 +9,6 @@ a fantastic way to manage package configurations.
 
 * Installing Emacs
 
-
-
 On Ubuntu, [[http://manpages.ubuntu.com/manpages/xenial/en/man8/apt.8.html][apt package manger]] is an easy way to install emacs.
 
 Here's what the parameter means.
@@ -88,6 +86,9 @@ Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bba
     ;;   )
     )
 #+end_src
+#+BEGIN_SRC emacs-lisp
+  ;;(switch-theme "solarized-dark")
+#+END_SRC
 ** Monokai theme
 
 #+begin_src emacs-lisp :tangle no
