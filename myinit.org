@@ -27,6 +27,7 @@ sudo apt install emacs
 #+BEGIN_SRC emacs-lisp
   (use-package dash)
 #+END_SRC
+
 * Personal Information
 
 #+begin_src emacs-lisp
@@ -77,13 +78,16 @@ theme I want to go to.
 Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bbatsov's solarized themes]].
 
 #+begin_src emacs-lisp
-(use-package solarized-theme
-  :defer 10
-  :init
-  (setq solarized-use-variable-pitch nil)
-  :ensure t)
+  (use-package solarized-theme
+    :defer 10
+    :ensure t  
+    :init
+    (setq solarized-use-variable-pitch nil)
+    ;; (progn
+    ;;   (load-theme 'solarized-dark t)
+    ;;   )
+    )
 #+end_src
-
 ** Monokai theme
 
 #+begin_src emacs-lisp :tangle no
@@ -149,6 +153,7 @@ Here's some configuration for [[https://github.com/bbatsov/solarized-emacs/][bba
       (setq nlinum-relative-offset 0)                 ;; 1 if you want 0, 2, 3...
       )
 #+END_SRC
+
 * Font
 [[http://adobe-fonts.github.io/source-code-pro/][Source Code Pro]] is a nice monospaced font.
 To install it on Ubuntu, you have to go to [[https://github.com/adobe-fonts/source-code-pro/releases/tag/2.030R-ro/1.050R-it][Adobe Source Code Pro Releases Page]]. Unzip it and install it via font viewer
@@ -189,9 +194,10 @@ Sources for this section include [[https://github.com/magnars/.emacs.d/blob/mast
 
   ;; Turn off the blinking cursor
   (blink-cursor-mode -1)
-  (set-default 'cursor-type 'hbar)
-
-  (setq-default indent-tabs-mode nil)
+  ;;(set-default 'cursor-type 'bar)
+  (set-cursor-color "skyblue")
+ 
+ (setq-default indent-tabs-mode nil)
   (setq-default indicate-empty-lines t)
 
   ;; Don't count two spaces after a period as the end of a sentence.
@@ -207,7 +213,7 @@ Sources for this section include [[https://github.com/magnars/.emacs.d/blob/mast
 
   (global-visual-line-mode)
   (diminish 'visual-line-mode)
-  (global-hl-line-mode -1)
+  (global-hl-line-mode 1)
   (setq uniquify-buffer-name-style 'forward)
 
   ;; -i gets alias definitions from .bash_profile
@@ -235,6 +241,7 @@ at point as the default value for occur.
 
 (bind-key "M-s o" 'occur-dwim)
 #+end_src
+
 * List buffers
 
 ibuffer is the improved version of list-buffers.
@@ -256,6 +263,7 @@ source: http://ergoemacs.org/emacs/emacs_buffer_management.html
 #+end_src
 
 source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
+
 * Which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -295,6 +303,7 @@ org-reveal
     :config
     (setq org-reveal-root "file:////home/nkhl/Dropbox/gitpackages/reveal.js/"))
 #+END_SRC
+
 * Window Management
 
 #+begin_src emacs-lisp
@@ -409,6 +418,7 @@ do just that to reduce the repetition.
     :init
       (yas-global-mode 1))
 #+END_SRC
+
 * Flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -440,6 +450,7 @@ do just that to reduce the repetition.
   (setq sml/theme 'dark)
   (setq sml/theme 'light)
   (setq sml/theme 'respectful)
+
 * Web Devlopment
 ** Web-mode
 #+BEGIN_SRC emacs-lisp
@@ -510,13 +521,15 @@ According to [[http://emmet.io/][their website]] , “Emmet — the essential to
     (add-hook 'html-mode-hook 'emmet-mode)
     (add-hook 'css-mode-hook 'emmet-mode))
 #+END_SRC
+
 * Scratch
 #+BEGIN_SRC emacs-lisp
   (use-package scratch
     :ensure t
     :commands scratch)
 #+END_SRC
-* COMMENT Mini-Buffer Editing 
+
+* Mini-Buffer Editing 
   Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it, especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
 #+BEGIN_SRC emacs-lisp
   (use-package miniedit
@@ -525,6 +538,7 @@ According to [[http://emmet.io/][their website]] , “Emmet — the essential to
     ;;(miniedit-install)
     )
 #+END_SRC
+
 * Tramp
 #+BEGIN_SRC emacs-lisp
   (use-package tramp)
@@ -568,3 +582,5 @@ Convenience bindings to use doc-view with the arrow keys.
   :config
   (server-start))
 #+end_src
+
+
