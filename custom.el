@@ -9,7 +9,10 @@
  '(package-selected-packages
    (quote
     (Powerline yasnippet which-key use-package try solarized-theme org-bullets flycheck cyberpunk-theme counsel auto-complete ace-window)))
- '(table-abort-recognition-when-input-pending nil))
+ '(table-abort-recognition-when-input-pending nil)
+ '(yas-snippet-dirs
+   (quote
+    ("/home/nkhl/.emacs.d/elpa/yasnippet-20160924.2001/snippets" yas-installed-snippets-dir))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

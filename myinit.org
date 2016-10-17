@@ -413,6 +413,7 @@ do just that to reduce the repetition.
 #+END_SRC
 
 * Yassnippet
+
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
@@ -552,7 +553,10 @@ When displaying the time with =display-time-mode=, I don't care about
 the load average.
 
 #+begin_src emacs-lisp
-(setq display-time-default-load-average nil)
+  ;; show time and in mode line
+
+  (display-time-mode 1)
+  (setq display-time-format "%I:%M")
 #+end_src
 
 ** Display Battery Mode
@@ -561,7 +565,8 @@ See the documentation for =battery-mode-line-format= for the format
 characters.
 
 #+begin_src emacs-lisp
-(setq battery-mode-line-format "[%b%p%% %t]")
+  (display-battery-mode 1)
+  (setq battery-mode-line-format "[%b%p%% %t]")
 #+end_src
 
 ** Docview keybindings
@@ -579,9 +584,22 @@ Convenience bindings to use doc-view with the arrow keys.
 ** Emacsclient
 
 #+begin_src emacs-lisp
-(use-package server
-  :config
-  (server-start))
+  ;; (use-package serverhttps://www.google.co.in/search?client=ubuntu&channel=fs&q=yo&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=GXn7V7LkKcuk8weihJLoCQagit
+  ;;   :config
+  ;;   (server-start))
 #+end_src
 
+* Undo-Tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode))
+#+END_SRC
+
+* Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
 
