@@ -7,3 +7,6 @@ myinit.el
 /recentf
 /games/
 /url/
+/eshell/
+/session.*
+/tramp
