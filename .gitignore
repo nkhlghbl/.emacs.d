@@ -9,4 +9,4 @@ myinit.el
 /url/
 /eshell/
 /session.*
-/tramp
+tramp
