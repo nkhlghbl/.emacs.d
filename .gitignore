@@ -8,5 +8,5 @@ myinit.el
 /games/
 /url/
 /eshell/
-/session.*
-tramp
+session.*
+/tramp
