@@ -162,7 +162,8 @@ And then this is how we tell Emacs to use the font we want to use.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist
-               '(font . "Source Code Pro-11"))
+               ;'(font . "Source Code Pro-11"))
+               '(font . "Terminus-11"))
 #+END_SRC
 
 * Sane defaults
@@ -296,14 +297,6 @@ source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
        (global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
 
-org-reveal
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ox-reveal
-    :ensure t
-    :config
-    (setq org-reveal-root "file:////home/nkhl/Dropbox/gitpackages/reveal.js/"))
-#+END_SRC
 
 * Window Management
 
