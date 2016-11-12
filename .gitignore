@@ -10,3 +10,4 @@ myinit.el
 /eshell/
 session.*
 /tramp
+/network-security.data

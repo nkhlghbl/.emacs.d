@@ -608,3 +608,19 @@ Convenience bindings to use doc-view with the arrow keys.
     (pdf-tools-install)
     )
 #+END_SRC
+
+
+* reveal
+#+BEGIN_SRC emacs-lisp
+(use-package ox-reveal
+  :ensure t
+  :config
+  (setq org-reveal-root "file:////home/nkhl/Dropbox/gitpackages/reveal.js/"))
+#+END_SRC
+
+* xwidgete
+ #+BEGIN_SRC emacs-lisp
+   (use-package xwidgete
+     :ensure t
+     )
+ #+END_SRC
