@@ -9,7 +9,7 @@
  '(doc-view-continuous t)
  '(package-selected-packages
    (quote
-    (xwidgete Powerline yasnippet which-key use-package try solarized-theme org-bullets flycheck cyberpunk-theme counsel auto-complete ace-window)))
+    (pdf-tools miniedit ace-window iedit elpy jedi htmlize ox-reveal magit undo-tree expand-region hungry-delete beacon scratch emmet-mode web-mode color-theme nlinum-relative nlinum xwidgete Powerline yasnippet which-key use-package try solarized-theme org-bullets flycheck cyberpunk-theme counsel auto-complete)))
  '(table-abort-recognition-when-input-pending nil)
  '(yas-snippet-dirs
    (quote
