@@ -1,5 +1,3 @@
-\#+TITLE: Emacs Configuration
-#+AUTHOR: Nikhil Ghobale
 
 I've been using Emacs form Aug of 2016. I am pretty new to this editor.
 I am learning my way into this editor.
@@ -176,7 +174,10 @@ And then this is how we tell Emacs to use the font we want to use.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist
                ;'(font . "Source Code Pro-11"))
-               '(font . "Terminus-11"))
+               ;'(font . "Terminus-11")
+               ;'(font . "Anonymous Pro-11")
+               '(font . "Inconsolata-11")
+               )
 #+END_SRC
 
 * Sane defaults
@@ -294,22 +295,6 @@ source: [[http://whattheemacsd.com/sane-defaults.el-01.html][Magnars Sveen]]
 
 #+END_SRC
 
-* Org Stuff
-#+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (global-set-key "\C-cl" 'org-store-link)
-       (global-set-key "\C-cc" 'org-capture)
-       (global-set-key "\C-ca" 'org-agenda)
-       (global-set-key "\C-cb" 'org-iswitchb)
-#+END_SRC
-
 * Window Management
 
 #+begin_src emacs-lisp
@@ -378,7 +363,10 @@ and Ivy / Counsel replace a lot of ido or helms completion functionality.
   ;; it looks like counsel is a requirement for swiper
   (use-package counsel
     :ensure t
-    )
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
 
   (use-package ivy
     :ensure t
@@ -428,6 +416,8 @@ and Ivy / Counsel replace a lot of ido or helms completion functionality.
     :ensure t
     :init
     (global-flycheck-mode t))
+  (use-package flycheck-pyflakes
+    :ensure t)
 #+END_SRC
 
 * Powerline
@@ -535,9 +525,11 @@ According to [[http://emmet.io/][their website]] , “Emmet — the essential to
 #+END_SRC
 
 * Mini-Buffer Editing 
-  Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it, especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
+  Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it,
+  especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
 #+BEGIN_SRC emacs-lisp
   (use-package miniedit
+    :ensure t
     :commands minibuffer-edit
     :init 
     (miniedit-install)
@@ -587,7 +579,7 @@ Convenience bindings to use doc-view with the arrow keys.
 ** Emacsclient
 
 #+begin_src emacs-lisp
-  ;; (use-package serverhttps://www.google.co.in/search?client=ubuntu&channel=fs&q=yo&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=GXn7V7LkKcuk8weihJLoCQagit
+  ;; (use-package server
   ;;   :config
   ;;   (server-start))
 #+end_src
@@ -621,6 +613,13 @@ Deletes all the whitespace when you hit backspace or delete
   (global-set-key (kbd "C-@") 'er/expand-region))
 #+END_SRC
 
+** dired+
+#+BEGIN_SRC emacs-lisp
+(use-package dired+
+  :ensure t
+  :config (require 'dired+)
+  )
+#+END_SRC
 ** misc
 #+BEGIN_SRC emacs-lisp
 (setq save-interprogram-paste-before-kill t)
@@ -628,16 +627,21 @@ Deletes all the whitespace when you hit backspace or delete
 
 * Undo-Tree
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    :ensure t
-    :init
-    (global-undo-tree-mode))
+    (use-package undo-tree
+      :ensure t
+      :init
+      (global-undo-tree-mode)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t))
 #+END_SRC
 
 * Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t)
+    :ensure t
+    :init
+    (progn
+      (bind-key "C-x g" 'magit-status)))
 #+END_SRC
 
 * Pdf-tools
@@ -730,4 +734,150 @@ Deletes all the whitespace when you hit backspace or delete
 (load-if-exists "~/Dropbox/shared/mu4econfig.el")
 (load-if-exists "~/Dropbox/shared/tempstuff.el")
 (load-if-exists "~/Dropbox/shared/not-for-github.el")
+#+END_SRC
+* Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra 
+    :ensure hydra
+    :init (progn
+          (global-set-key
+           (kbd "C-x t")
+           (defhydra toggle (:color blue)
+             "toggle"
+             ("a" abbrev-mode "abbrev")
+             ("d" toggle-debug-on-error "debug")
+             ("c" fci-mode "fCi")
+             ("f" auto-fill-mode "fill")
+             ("t" toggle-truncate-lines "truncate")
+             ("w" whitespace-mode "whitespace")
+             ("q" nil "cancel")))
+          (global-set-key
+           (kbd "C-x j")
+           (defhydra gotoline 
+               ( :pre (linum-mode 1)
+                      :post (linum-mode -1))
+             "goto"
+             ("t" (lambda () (interactive)(move-to-window-line-top-bottom 0)) "top")
+             ("b" (lambda () (interactive)(move-to-window-line-top-bottom -1)) "bottom")
+             ("m" (lambda () (interactive)(move-to-window-line-top-bottom)) "middle")
+             ("e" (lambda () (interactive)(end-of-buffer)) "end")
+             ("c" recenter-top-bottom "recenter")
+             ("n" next-line "down")
+             ("p" (lambda () (interactive) (forward-line -1))  "up")
+             ("g" goto-line "goto-line")
+             ))
+          (global-set-key
+           (kbd "C-x w")
+           (defhydra hydra-window ()
+             "window"
+             ("h" windmove-left)
+             ("j" windmove-down)
+             ("k" windmove-up)
+             ("l" windmove-right)
+             ("a" (lambda ()
+                    (interactive)
+                    (ace-window 1)
+                    (add-hook 'ace-window-end-once-hook
+                              'hydra-window/body)
+                    (throw 'hydra-disable t))
+              "ace")
+             ("v" (lambda ()
+                    (interactive)
+                    (split-window-right)
+                    (windmove-right))
+              "vert")
+             ("x" (lambda ()
+                    (interactive)
+                    (split-window-below)
+                    (windmove-down))
+              "horz")
+             ("s" (lambda ()
+                    (interactive)
+                    (ace-window 4)
+                    (add-hook 'ace-window-end-once-hook
+                              'hydra-window/body)
+                    (throw 'hydra-disable t))
+              "swap")
+             ("t" transpose-frame "'")
+             ("d" (lambda ()
+                    (interactive)
+                    (ace-window 16)
+                    (add-hook 'ace-window-end-once-hook
+                              'hydra-window/body)
+                    (throw 'hydra-disable t))
+              "del")
+             ("o" delete-other-windows "one" :color blue)
+             ("i" ace-maximize-window "ace-one" :color blue)
+             ("q" nil "cancel")))))
+#+END_SRC
+* Fill colum indicator
+#+BEGIN_SRC emacs-lisp
+(use-package fill-column-indicator
+:ensure t
+:init (progn
+(setq fci-rule-column 90)
+))
+#+END_SRC
+* UTF-8
+#+BEGIN_SRC emacs-lisp
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+#+END_SRC
+* Browse-kill-ring - see what you’ve cut so that you can paste it
+Make sense of the kill ring! This lets you list the contents of the kill ring and paste a specific item. You can also manipulate your kill ring contents.
+
+If you’re new to Emacs, you might not yet know about what the kill ring is. It stores the items that you cut (or kill, in Emacs terms). You’re not limited to pasting just the most recent item - you can paste the second-to-the-last item you cut, and so on. I remember to use C-y and M-y when going backwards in the kill ring, but I never quite remember how to go forward, so browse-kill-ring makes it easier.
+#+BEGIN_SRC emacs-lisp
+    (use-package browse-kill-ring
+      :ensure t
+      :init 
+      (progn 
+        (browse-kill-ring-default-keybindings) ;; M-y
+        (setq browse-kill-ring-quit-action 'save-and-restore)))
+#+END_SRC
+* smartparens
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+:ensure smartparens
+:config 
+(progn
+(require 'smartparens-config)
+(require 'smartparens-html)
+(require 'smartparens-python)
+(require 'smartparens-latex)
+(smartparens-global-mode t)
+(show-smartparens-global-mode t)
+))
+#+END_SRC
+* Rainbow delimiters
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-delimiters
+:ensure t
+  :init (rainbow-delimiters-mode))
+#+END_SRC
+* Projectile
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+:ensure t
+:init (progn
+(projectile-global-mode)
+(setq projectile-completion-system 'ivy)
+))
+#+END_SRC
+* keybindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "\e\ei")
+		(lambda () (interactive) (find-file "~/Dropbox/orgfiles/i.org")))
+
+(global-set-key (kbd "\e\eb")
+		(lambda () (interactive) (find-file "~/Dropbox/orgfiles/links.org")))
+
+(global-set-key (kbd "\e\ea")
+		(lambda () (interactive) (find-file "~/Dropbox/orgfiles/apcs.org")))
+
+(global-set-key (kbd "\e\es")
+		(lambda () (interactive) (find-file "~/Dropbox/orgfiles/softdev.org")))
+(global-set-key (kbd "\e\ec")
+		(lambda () (interactive) (find-file "~/Dropbox/orgfiles/cstuy.org")))
 #+END_SRC

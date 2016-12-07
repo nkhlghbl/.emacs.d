@@ -4,7 +4,7 @@
   (menu-bar-mode 1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
-  (tooltip-mode -1))
+  (tooltip-mode 1))
 
 (setq inhibit-startup-message t)
 ;;(setq initial-scratch-message "")
@@ -33,3 +33,4 @@
 
 ;;; Load the config
 (org-babel-load-file (concat user-emacs-directory "myinit.org"))
+(org-babel-load-file (concat user-emacs-directory "orgmode-init.org"))

@@ -11,3 +11,12 @@ myinit.el
 session.*
 /tramp
 /network-security.data
+/orgmode-init.el
+/bookmarks
+*.eld
+*.html
+*.jpg
+*.tex
+/image-dired/
+/image-dired/Screenshot from 2016-12-05 18-55-02_61d7bfc709908ef456c3710c2e487c78.thumb.png
+*.png
