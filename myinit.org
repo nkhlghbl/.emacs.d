@@ -1,3 +1,5 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Nikhil Ghobale
 
 I've been using Emacs form Aug of 2016. I am pretty new to this editor.
 I am learning my way into this editor.
